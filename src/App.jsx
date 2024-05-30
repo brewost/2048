@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import './App.css';
-
+// to do: end game, score, images, button to restart/start/instructions - seperate into components??
 function App() {
-  const GridComponent = () => {
+  
     const [gridData, setGridData] = useState([]);
 
     const initialiseGrid = () => {
@@ -51,7 +51,7 @@ function App() {
       }
       return arr;
     };
-
+    // nested for loops to transpose the contents of the array - so that same logic for left and right can be used.
     const transpose = (matrix) => {
       let transposed = [];
       for (let i = 0; i < matrix.length; i++) {
@@ -62,13 +62,32 @@ function App() {
       }
       return transposed;
     };
+  
+   const addRandomTile = (grid) => {
+      const emptyCells = [];      // Find all empty cells
+      for (let i = 0; i < grid.length; i++) {
+        for (let j = 0; j < grid[i].length; j++) {
+          if (!grid[i][j]) {        //if cell is falsy(null) add in its co-ords
+            emptyCells.push({ row: i, col: j }); 
+          }
+        }
+      }
 
+      if (emptyCells.length === 0) return grid; // this is where game will end
+
+      const randomCell = emptyCells[Math.floor(Math.random() * emptyCells.length)]; // random cell is chosen and stored in empty cell
+      grid[randomCell.row][randomCell.col] = Math.random() < 0.95 ? 2 : 4; // adds in a 2 or a 4 into the random cell co-ords
+
+      return grid;
+    };
+     //add in random 2 logic here.
+// const addRandomTile = 
     const updateGrid = (direction) => {
       let newGrid = [...gridData];
 
       if (direction === "Left" || direction === "Right") {
         if (direction === "Right") {
-          newGrid = newGrid.map(row => slideRow(row.slice().reverse()).reverse());
+          newGrid = newGrid.map(row => slideRow(row.slice().reverse()).reverse()); // copy array and reverse it. use same logic as for left, then reverse.
         } else {
           newGrid = newGrid.map(row => slideRow(row));
         }
@@ -81,9 +100,7 @@ function App() {
         }
         newGrid = transpose(newGrid);
       }
-
-    
-
+      addRandomTile(newGrid); 
       setGridData(newGrid);
     };
 
@@ -92,15 +109,13 @@ function App() {
       {gridData.map((row, x) => {
         return(
         row.map((cell, y) => {
-          return <div className="  cell" key={x + "." + y} >{cell ? cell : ""}<span>{x + "." + y }</span></div>
+          return <div className="  cell" key={x + "." + y} >{cell ? cell : ""}</div>
         }))
       })}
     </section>
     );
-  };
+  }
 
-  return <GridComponent />;
-}
 
 export default App;
 
