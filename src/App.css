@@ -13,3 +13,7 @@
   border: 2px solid black;
   padding: 20px;
 }
+.score{
+  font-size: larger;
+  font-weight: 400;
+}
